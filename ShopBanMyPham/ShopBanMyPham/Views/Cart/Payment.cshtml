@@ -71,7 +71,14 @@
                                             var cartItem = Model.FirstOrDefault();
                                         }
                                         <td>Shipping:</td>
-                                        <td>@cartItem.ShippingCost.ToString("N0") VND</td>
+                                            @if(cartItem != null)
+                                            {
+                                            <td>@cartItem.ShippingCost.ToString("N0") VND</td>
+                                        }
+                                        else
+                                        {
+                                            <td>0 VND</td>
+                                        }
                                     </tr>
                                     <tr class="summary-total">
                                         <td>Total:</td>
@@ -80,7 +87,7 @@
                                 </tbody>
                             </table><!-- End .table table-summary -->
 
-                            <a asp-controller="Cart" asp-action="ConfirmPayment" class="btn btn-outline-primary-2 btn-order btn-block" style="display:inline-block; width:100%;">
+                            <a asp-controller="Cart" asp-action="ConfirmPayment" class="btn btn-outline-primary-2 btn-order btn-block" onclick="checkCustomer();" style="display:inline-block; width:100%;">
                                 <span class="btn-text">Place Order</span>
                                 <span class="btn-hover-text">Confirm</span>
                             </a>

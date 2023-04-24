@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using ShopBanMyPham.Models;
 
 namespace ShopBanMyPham.Controllers
@@ -7,9 +8,12 @@ namespace ShopBanMyPham.Controllers
     {
         ShopBanMyPhamContext _context = null;
 
-        public LoginController()
+        public INotyfService _notyfService { get; }
+
+        public LoginController(INotyfService notyfService)
         {
             _context = new ShopBanMyPhamContext();
+            _notyfService= notyfService;
         }
         public IActionResult Index()
         {
@@ -33,6 +37,7 @@ namespace ShopBanMyPham.Controllers
                 if (user != null)
                 {
                     HttpContext.Session.SetString("UserName", user.Username.ToString());
+                    _notyfService.Success("Đăng nhập thành công");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -66,6 +71,7 @@ namespace ShopBanMyPham.Controllers
                 user.TypeUserId = 3;
                 _context.Users.Add(user);
                 _context.SaveChanges();
+                _notyfService.Success("Đăng kí thành công");
                 return RedirectToAction("Index");
             }
             ViewBag.ErrorRegister = "Tài khoản đã tồn tại";
@@ -99,6 +105,7 @@ namespace ShopBanMyPham.Controllers
             {
                 res.Password = Password;
                 _context.SaveChanges();
+                _notyfService.Success("Đổi mật khẩu thành công");
                 return RedirectToAction("Index");
             }
         }

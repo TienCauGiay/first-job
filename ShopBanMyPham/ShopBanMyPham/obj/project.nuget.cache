@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Y4gDl3ylXIgyj/2Ujm7KCMEcb6G/4yhKqMW7cGgrRj5nIaMDuK6wxZpHENG6WdfO3YrilISkglaM/9o+lIKntA==",
+  "dgSpecHash": "0Q6Q2B32cKgmkiZEZ+QCxAvo4zPhTX9M8HXrIp2ngpFiAh0Z7mc7SqTx5BAVnw6Ce+2bA+QhdvFZh0Dk+0jE2Q==",
   "success": true,
   "projectFilePath": "F:\\DHGTVT\\ThucTapChuyenMon_Back-end Dev\\ShopBanMyPham\\ShopBanMyPham\\ShopBanMyPham.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\DELL\\.nuget\\packages\\aspnetcorehero.toastnotification\\1.1.0\\aspnetcorehero.toastnotification.1.1.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

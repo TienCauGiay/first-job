@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using ShopBanMyPham.Models;
 using System.Drawing;
 
@@ -8,9 +9,12 @@ namespace ShopBanMyPham.Controllers
 	{
 		ShopBanMyPhamContext _context = null;
 
-		public CustomerController()
+		public INotyfService _notyfService { get; }
+
+		public CustomerController(INotyfService notyfService)
 		{
 			_context= new ShopBanMyPhamContext();
+			_notyfService=notyfService;
 		}
 		public IActionResult UpdateInfo(string fullname, string address, string email, string phoneNumber)
 		{
@@ -37,7 +41,8 @@ namespace ShopBanMyPham.Controllers
                 customer.PhoneNumber = phoneNumber;
 				_context.SaveChanges();
             }
-			return RedirectToAction("Payment", "Cart");
+            _notyfService.Success("Cập nhật thông tin khách hàng thành công");
+            return RedirectToAction("Payment", "Cart");
 		}
 	}
 }

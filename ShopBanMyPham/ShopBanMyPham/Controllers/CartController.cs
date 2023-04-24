@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopBanMyPham.Models;
 using System.Collections.Generic;
@@ -9,11 +10,14 @@ namespace ShopBanMyPham.Controllers
     {
         ShopBanMyPhamContext _context = null;
 
+        public INotyfService _notyfService { get; }
+
         private const string GIOHANG = "GIOHANG";
 
-        public CartController()
+        public CartController(INotyfService notyfService)
         {
             _context = new ShopBanMyPhamContext();
+            _notyfService = notyfService;
         }
         public IActionResult Index()
         {
@@ -221,12 +225,26 @@ namespace ShopBanMyPham.Controllers
 
         public IActionResult ConfirmPayment()
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            var user = _context.Users.FirstOrDefault(x => x.Username == userName);
+            var customer = _context.Customers.FirstOrDefault(x => x.UserId == user.UserId);
+            if(customer == null)
+            {
+                _notyfService.Success("Bạn cần cập nhật thông tin khách hàng");
+                return RedirectToAction("Payment");
+            }
+
             var giohang = HttpContext.Session.GetString(GIOHANG) ?? string.Empty;
             var cart = JsonConvert.DeserializeObject<List<CartItem>>(giohang);
             var list = new List<CartItem>();
             if (cart != null)
             {
                 list = cart;
+            }
+            if(list.Count < 1)
+            {
+                _notyfService.Success("Chưa có sản phẩm nào để thanh toán");
+                return RedirectToAction("Index", "Home");
             }
             var total = 0;
             foreach (var item in list)
@@ -238,9 +256,7 @@ namespace ShopBanMyPham.Controllers
                 var cartItem = list.FirstOrDefault();
                 total += cartItem.ShippingCost;
             }
-            string userName = HttpContext.Session.GetString("UserName");
-            var user = _context.Users.FirstOrDefault(x => x.Username == userName);
-            var customer = _context.Customers.FirstOrDefault(x => x.UserId == user.UserId);
+            
             var order = new Order();
             order.CustomerId = customer.CustomerId;
             order.EmployeeId = 1;
@@ -259,17 +275,24 @@ namespace ShopBanMyPham.Controllers
                         ct.OrderId = order.OrderId;
                         ct.ProductId = item.Product.ProductId;
                         ct.SellNumber = item.SellQuantity;
+                        ct.ShippingCost = item.ShippingCost / list.Count;
                         _context.OrderDetails.Add(ct);
                         sp.Quantity -= item.SellQuantity;
                         _context.SaveChanges();
+                    }
+                    else
+                    {
+                        _notyfService.Success("Số sản phẩm hiện tại tại cửa hàng không đủ");
+                        return RedirectToAction("Index");
                     }
                 }
                 HttpContext.Session.Remove(GIOHANG);
             }
             catch (Exception ex)
             {
-                return View();
+                
             }
+            _notyfService.Success("Bạn đã đặt hàng thành công");
             return RedirectToAction("Index", "Home");
         }
 
